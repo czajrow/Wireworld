@@ -1,0 +1,263 @@
+\documentclass[a4paper,12pt,oneside]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[pdftex]{graphicx}
+\usepackage{polski}
+\usepackage{amsfonts}
+\usepackage{verbatim}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage[polish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+\rhead{}
+\lhead{}
+\cfoot{str. \thepage/\pageref{LastPage}}
+\newcommand{\multlinecomment}[1]{\directlua{-- #1}}
+
+\begin{document}
+\makeatletter
+\addtocontents{toc}{\protect\thispagestyle{empty}}
+\newcommand{\linia}{\rule{\linewidth}{0.4mm}}
+
+\renewcommand{\maketitle}{\begin{titlepage}
+
+    \vspace*{1cm}
+
+    \begin{center}\small
+
+    Politechnika Warszawska\\
+
+    Wydział Elektryczny\\
+
+    \end{center}
+
+    \vspace*{1cm}
+
+    \noindent\linia
+
+    \begin{center}
+
+      \LARGE \textsc{\@title}
+
+         \end{center}
+
+      \noindent\linia
+
+    \vspace{1cm}
+
+    \begin{flushright}
+
+    \begin{minipage}{5cm}
+
+    \textit{\small Autorzy:}\\
+
+    \normalsize \textsc{\@author} \par
+
+    \end{minipage}
+         \end{flushright}
+ \begin{center}
+    \vspace{5cm}
+
+     {\small Praca wykonana w~ramach przedmiotu:
+     Języki i~metody programowania 2}
+
+    \vspace*{\stretch{6}}
+
+    \@date
+
+    \end{center}
+
+  \end{titlepage}
+
+}
+
+\makeatother
+
+\title{Specyfikacja implementacyjna}
+
+\title{SPECYFIKACJA IMPLEMENTACYJNA\\projekt: wireworld}
+
+\author{Anna Głowińska\newline numer indeksu: 291070\newline anna.glowinska98@gmail.com \newline \newline
+Adam Czajka\newline numer indeksu: 291063 \newline czajka.adam147@gmail.com}
+
+\maketitle
+\tableofcontents
+\thispagestyle{fancy}
+\newpage
+
+\section{Informacje ogólne}
+
+\subsection{Uruchomienie programu}
+Uruchomienie programu \verb+Wireworld+ następuje poprzez wciśnięcie przez użytkownika przycisku \verb+run+ w programie \verb+IntelliJ+. Po jego włączeniu program odczytuje dane wejściowe podane uprzednio przez użytkownika i przedstawia upływ czasu w postaci dyskretnych kroków czasowych - kolejnych generacji.
+\par Działanie programu \verb+Wireworld+ odbywa się w głównym oknie aplikacji, gdzie przebiega komunikacja między użytkownikiem a programem w celu zatrzymania lub wznowienia działania programu, zmiany częstotliwości z jaką zachodzą kolejne generacje bądź zapisania bieżącej generacji do pliku TXT.
+
+
+\subsection{Przebieg programu}
+Program na podstawie pobranych od użytkownika informacji z pliku TXT wykonuje ze stałą częstotliwością kolejne generacje. Każdorazowo pokazuje obecną generację w głównym oknie aplikacji i~oczekuje na upłyniecie określonego przez użytkownika czasu do wykonania kolejnej generacji. Po wyborze zmiany częstotliwości z paska menu aplikacji następuje zmiana okresu trwania generacji. Po wyborze opcji:
+\begin{itemize}
+\item \verb+start+ następuje wznowienie działania automatu komórkowego,
+\item \verb+stop+ następuje zatrzymanie działania automatu komórkowego,
+\item \verb+zapisz+ następuje zapisanie bieżącej generacji do pliku TXT.
+\end{itemize}
+
+\newpage
+\section{Opis modułów}
+
+\subsection{Diagram modułów}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=1.0\textwidth]{class_java_wireworld.png}
+\caption{Diagram modułów.}
+\label{fig:k1}
+\end{figure}
+
+\subsection{Uzasadnienie}
+Diagram modułów programu \verb+Wireworld+ ma postać przedstawioną na rysunku nr 1. Moduły są między sobą powiązane relacją zależności, ponieważ wymagają ich do realizacji własnej funkcjonalności. Zależność między dwoma modułami oznaczona jest strzałką i polega na tym, że moduł w stronę którego skierowany jest grot strzałki korzysta drugiego z danych modułów - zmiana w tym module może spowodować konieczność zmiany w module oznaczonym strzałką.
+
+\subsection{Klasa Cell}
+
+Klasa \verb+Cell+ przechowuje stan w jakim aktualnie się znajduje oraz posiada metody \verb+setCellState+, \verb+getCellState+ i \verb+getStateColor+.
+
+\begin{description}
+\item[Metoda \texttt{setCellState}] \hfill \\
+Metoda odpowiada za ustawienie stanu komórki.
+\begin{itemize}
+\item metoda przyjmuje jako argument \verb+CellState+,
+\item metoda jest typu \verb+void+ - nie przekazuje informacji zwrotnej.
+\end{itemize}
+
+\item[Metoda \texttt{getCellState}] \hfill \\
+Metoda zwraca stan komórki.
+\begin{itemize}
+\item metoda jest bezargumentowa,
+\item metoda zwraca \verb+CellState+.
+\end{itemize}
+
+\item[Metoda \texttt{getStateColor}] \hfill \\
+Metoda zwraca odpowiedni kolor dla danego stanu komórki.
+\begin{itemize}
+\item metoda jest bezargumentowa,
+\item metoda zwraca \verb+Color+.
+\end{itemize}
+
+\end{description}
+
+\subsection{Klasa Matrix}
+
+Klasa \verb+Matrix+ przechowuje dwuwymiarową tablicę obiektów klasy \verb+Cell+ oraz posiada metody \verb+getCell+, \verb+read+ i \verb+write+.
+
+\begin{description}
+\item[Metoda \texttt{getCell}] \hfill \\
+Metoda zwraca komórkę o zadanych współrzędnych.
+\begin{itemize}
+\item metoda przyjmuje jako argumenty dwie liczby całkowite,
+\item metoda zwraca obiekt klasy \verb+Cell+.
+\end{itemize}
+
+\item[Metoda \texttt{read}] \hfill \\
+Metoda wywołuje wielokrotnie metodę \verb+readNextState+ klasy \verb+Parser+, aby utworzyć całą macierz potrzebną do działania programu \verb+Wireworld+.
+\begin{itemize}
+\item metoda jako argument przyjmuje ścieżkę do pliku,
+\item metoda jest typu \verb+void+ - nie przekazuje informacji zwrotnej.
+\end{itemize}
+
+\item[Metoda \texttt{write}] \hfill \\
+Metoda wywołuje wielokrotnie metodę \verb+writeNextState+ klasy \verb+MyFileWriter+, aby zapisać całą macierz stanowiącą obraz bieżącej generacji do pliku TXT.
+\begin{itemize}
+\item metoda jako argument przyjmuje ścieżkę do pliku,
+\item metoda jest typu \verb+void+ - nie przekazuje informacji zwrotnej.
+\end{itemize}
+
+\end{description}
+
+\subsection{Klasa Game}
+
+Klasa \verb+Game+ odpowiada za graficzny interfejs użytkownika oraz posiada metodę \verb+run+.
+
+\begin{description}
+\item[Metoda \texttt{run}] \hfill \\
+Metoda odpowiada za przeprowadzenie całej sekwencji generacji tworzących symulację \verb+Wireworld+.
+\begin{itemize}
+\item metoda jest bezargumentowa,
+\item metoda jest typu \verb+void+ - nie przekazuje informacji zwrotnej.
+\end{itemize}
+
+\end{description}
+
+\subsection{Klasa Parser}
+
+Klasa \verb+Parser+ odpowiada za pobranie danych z pliku wejściowego TXT oraz posiada metodę \verb+readNextState+.
+
+\begin{description}
+\item[Metoda \texttt{readNextState}] \hfill \\
+Metoda odpowiada za odczyt stanu komórki z pliku TXT.
+\begin{itemize}
+\item metoda jest bezargumentowa,
+\item metoda zwraca \verb+CellState+.
+\end{itemize}
+
+\end{description}
+
+\subsection{Klasa MyFileWriter}
+
+Klasa \verb+MyFileWriter+ odpowiada za zapis bieżącej generacji do pliku TXT oraz posiada metodę \verb+getCell+.
+
+\begin{description}
+\item[Metoda \texttt{writeNextState}] \hfill \\
+Metoda odpowiada za zapis stanu komórki do pliku TXT.
+\begin{itemize}
+\item metoda przymuje jako argument ścieżkę do pliku oraz \verb+CellState+,
+\item metoda jest typu \verb+void+ - nie przekazuje informacji zwrotnej.
+\end{itemize}
+
+\end{description}
+
+\subsection{Enum CellState}
+
+Enum \verb+CellState+ to struktura danych służąca do reprezentacji stanu komórek. Wyróżniamy w niej stany: \verb+EMPTY+, \verb+ELECTRON_HEAD+, \verb+ELECTRON_TAIL+ oraz \verb+CONDUCTOR+.
+
+\section{Przechowywanie danych}
+\subsection{Struktura danych}
+
+Dane wejściowe są zapisywane w~obiekcie \verb+matrix+ klasy \verb+Matrix+. Obiekt \verb+matrix+ zawiera tablicę obiektów klasy \verb+Cell+ o~wymiarach zgodnych z~danymi wejściowymi.
+\par Dostęp do danych znajdujących się w~obiekcie \verb+matrix+ następuje poprzez wywołanie metody \verb+getCell+.
+
+\section{Sprzęt i oprogramowanie}
+
+\subsection{System operacyjny}
+Program \verb+Wireworld+ został napisany, kompilowany i~testowany na systemie operacyjnym \verb+macOS High Sierra+. System ten jest z~rodziny \verb+UNIX+.
+
+\subsection{Język programowania}
+Program \verb+Wireworld+ został napisany w~języku \verb+Java+.
+
+\subsubsection{Wersja}
+Program \textit{Wireworld} został napisany za pomocą programu \verb+IntelliJ+ \verb+IDEA 2017.3.5+ \verb+(Community Edition)+.
+
+\subsection{Testowanie programu}
+
+\subsubsection{Testy}
+Do testowania używane są pliki testowe zawierające testy pojedynczych funkcjonalności programu. Wszystkie pliki zawierające testy przechowywane są w~katalogu \verb+wireworld/src/ww/tests+ i~nazwane zgodnie z~następującą koncepcją: \verb+,,test_co-jest-testowane_co-powinno-być-wynikiem/skutkiem.java''+.
+
+\par
+Testy jednostkowe pisane są na zasadzie given-when-then. Oznacza to, że kod każdego testu zostanie podzielony na trzy części:
+\begin{itemize}
+\item given - odpowiadającą za dane, które test pobiera z~programu,
+\item when - wykonująca odpowiednie działania, wywołująca funkcje etc.,
+\item then - sprawdzająca poprawność wykonanych działań, wywołanych funkcji etc.
+\end{itemize}
+
+\section{Wersjonowanie}
+
+\subsection{Branch'e}
+Program jest pisany i~commit'owany z~jednej tylko gałęzi \verb+master+, ponieważ w~dwuosobowej zajmującej się tym programem grupie zachowane zostają zasady extreme programming zakładające obecność dwóch osób podczas pisania kodu.
+
+\subsection{Historia wersji}
+Historia wersji programu zostaje wypisana na ekran za pomocą dekstopu \verb+GitCracken+.
+
+
+\end{document}
